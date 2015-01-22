@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Random;
 
 import la.application.configManagement.Config;
-import la.common.RewardsGroup;
+import la.common.Agent;
 import la.common.Try;
 import la.persistence.database.Database;
 
@@ -51,7 +51,7 @@ public class Experiment {
 
 	private int numOfEpisodes = Config.EDISODES;
     private int whichEpisode = 0;
-	private RewardsGroup rewardsGroup;
+	private Agent rewardsGroup;
 
     /* Run One Episode of length maximum cutOff*/
     private void runEpisode(int stepLimit) {
@@ -124,7 +124,7 @@ public class Experiment {
     public Experiment() {
         db = ManagerFactory.getManager(Database.class);
         aTryList = new ArrayList<Try>(); 
-    	rewardsGroup = db.getLastRewardsGroup();
+    	rewardsGroup = db.getLastAgent();
    	}
 
     public static void main(String[] args) {

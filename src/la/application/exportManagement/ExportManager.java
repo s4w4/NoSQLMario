@@ -2,7 +2,7 @@ package la.application.exportManagement;
 
 import context.ManagerFactory;
 import la.common.Reward;
-import la.common.RewardsGroup;
+import la.common.Agent;
 import la.common.Try;
 import la.persistence.database.Database;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -79,7 +79,7 @@ public class ExportManager {
     }
 
     private void readDataFromDB() {
-        RewardsGroup currentRewardGroup = db.getLastRewardsGroup();
+        Agent currentRewardGroup = db.getLastAgent();
         rewards = currentRewardGroup.getRewards();
         tries = db.getTries(currentRewardGroup);
         rewardGroupID = currentRewardGroup.getId();

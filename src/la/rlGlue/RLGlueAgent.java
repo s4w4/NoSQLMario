@@ -39,7 +39,7 @@ import org.rlcommunity.rlglue.codec.taskspec.ranges.DoubleRange;
 
 import la.persistence.database.Database;
 import la.application.configManagement.Config;
-import la.common.RewardsGroup;
+import la.common.Agent;
 import la.common.State;
 
 public abstract class RLGlueAgent implements AgentInterface {
@@ -50,7 +50,7 @@ public abstract class RLGlueAgent implements AgentInterface {
     protected State lastState;
     protected double[] valueFunction;
     protected Database db;
-	private RewardsGroup rewardsGroup;
+	private Agent rewardsGroup;
 
     public void agent_init(String taskSpecification) {
         TaskSpec theTaskSpec=new TaskSpec(taskSpecification);
@@ -76,7 +76,7 @@ public abstract class RLGlueAgent implements AgentInterface {
     public Action agent_start(Observation observation) {
         State state = extractState(observation);        
         
-		rewardsGroup = db.getLastRewardsGroup();
+		rewardsGroup = db.getLastAgent();
         valueFunction = db.select(state, rewardsGroup); 
         
         int theIntAction = egreedy(valueFunction);
@@ -117,7 +117,7 @@ public abstract class RLGlueAgent implements AgentInterface {
     }
 
     public void agent_end(double reward) {
-    	RewardsGroup rewardsGroup = db.getLastRewardsGroup();
+    	Agent rewardsGroup = db.getLastAgent();
             
         valueFunction = db.select(lastState, rewardsGroup);
 

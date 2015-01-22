@@ -72,4 +72,35 @@ public class State {
     	return getStateId()+"";
     }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (enemyState ^ (enemyState >>> 32));
+		result = prime * result
+				+ (int) (environmentState ^ (environmentState >>> 32));
+		result = prime * result + (int) (marioState ^ (marioState >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		State other = (State) obj;
+		if (enemyState != other.enemyState)
+			return false;
+		if (environmentState != other.environmentState)
+			return false;
+		if (marioState != other.marioState)
+			return false;
+		return true;
+	}
+    
+    
+
 }

@@ -1,7 +1,7 @@
 package la.application.Fassade;
 
 import la.common.Reward;
-import la.common.RewardsGroup;
+import la.common.Agent;
 import la.common.Zone;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public interface RLGlueService {
     public Integer[] getAllDifficulties();
     public String[] getAllAgents();
 
-    public RewardsGroup saveRewards(List<Reward> rewards);
+    public Agent saveRewards(List<Reward> rewards);
 
     public int getMarioStartState();
     public int getDifficulty();
@@ -63,7 +63,7 @@ public interface RLGlueService {
      *
      * @return Rewardsgroup
      */
-    public RewardsGroup getCurrentReward();
+    public Agent getCurrentReward();
 
     /**
      * speichert Rewards in DB

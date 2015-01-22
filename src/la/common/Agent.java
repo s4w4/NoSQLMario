@@ -2,11 +2,11 @@ package la.common;
 
 import java.util.List;
 
-public class RewardsGroup {
+public class Agent {
 
 	private int id; 
 	private List<Reward> rewards;
-	public RewardsGroup(int id, List<Reward> rewards) {
+	public Agent(int id, List<Reward> rewards) {
 		super();
 		this.id = id;
 		this.rewards = rewards;
@@ -35,14 +35,12 @@ public class RewardsGroup {
 
 	public void setRewards(List<Reward> rewards) {
 		this.rewards = rewards;
-	} 
-	
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + id;
-		result = prime * result + ((rewards == null) ? 0 : rewards.hashCode());
 		return result;
 	}
 	@Override
@@ -53,14 +51,16 @@ public class RewardsGroup {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RewardsGroup other = (RewardsGroup) obj;
+		Agent other = (Agent) obj;
 		if (id != other.id)
-			return false;
-		if (rewards == null) {
-			if (other.rewards != null)
-				return false;
-		} else if (!rewards.equals(other.rewards))
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return id + "";
+	} 
+	
+	
+	
 }

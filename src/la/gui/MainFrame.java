@@ -127,11 +127,11 @@ public class MainFrame {
     	db = ManagerFactory.getManager(Database.class);
     	rlGlueService = ManagerFactory.getManager(RLGlueService.class);
 
-    	if(db.getLastRewardsGroup().getRewards().isEmpty()) {
+    	if(db.getLastAgent().getRewards().isEmpty()) {
             rlGlueService.saveRewards(rlGlueService.getRewards());
         }
 
-        rlGlueService.setRewards(db.getLastRewardsGroup().getRewards());
+        rlGlueService.setRewards(db.getLastAgent().getRewards());
 
     	contentPane.setLayout(new BorderLayout());
 		contentPane.add(mainLabel, BorderLayout.NORTH);
@@ -357,7 +357,7 @@ public class MainFrame {
                     rewards.add(new Reward(downLable.getText(), downInt));
 
                     rlGlueService.saveRewards(rewards);
-                    rlGlueService.setRewards(db.getLastRewardsGroup().getRewards());
+                    rlGlueService.setRewards(db.getLastAgent().getRewards());
                 } catch (NumberFormatException nfe) {
                 }
             }
@@ -567,7 +567,7 @@ public class MainFrame {
                 State state = new State(Long.parseLong(modeTextField.getText()), Long.parseLong(sceneTextField.getText()), Long.parseLong(enemyTextField.getText()));
                 DatabaseImpl db = new DatabaseImpl();
 
-                double[] values = db.select(state, db.getLastRewardsGroup());
+                double[] values = db.select(state, db.getLastAgent());
 
                 a1TextField.setText("" + values[0]);
                 a2TextField.setText("" + values[1]);

@@ -7,7 +7,7 @@ import la.application.exportManagement.ExportManager;
 import la.application.starter.MarioAIStarter;
 import la.application.starter.Play;
 import la.common.Reward;
-import la.common.RewardsGroup;
+import la.common.Agent;
 import la.common.Zone;
 import la.persistence.database.Database;
 
@@ -56,8 +56,8 @@ public class Fassade implements RLGlueService {
     public String[] getAllAgents(){return Config.getAllAgents();}
 
     @Override
-    public RewardsGroup saveRewards(List<Reward> rewards) {
-        return db.getRewardsGroup(rewards);
+    public Agent saveRewards(List<Reward> rewards) {
+        return db.getAgent(rewards);
     }
 
     public int getMarioStartState(){
@@ -90,8 +90,8 @@ public class Fassade implements RLGlueService {
     }
 
     @Override
-    public RewardsGroup getCurrentReward() {
-        return db.getLastRewardsGroup();
+    public Agent getCurrentReward() {
+        return db.getLastAgent();
     }
 
     @Override

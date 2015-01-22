@@ -3,25 +3,28 @@ package la.persistence.database;
 import java.util.List;
 
 import la.common.Reward;
-import la.common.RewardsGroup;
+import la.common.Agent;
 import la.common.State;
 import la.common.Try;
 
 public interface Database {
 	
-	public RewardsGroup getRewardsGroup(List<Reward> rewards); 
-	
-	public double[] select(State state, RewardsGroup rewardsGroup);
-	
-	boolean update(State state, RewardsGroup rewardsGroup, int action, double value);
-	
-	//?
-	public boolean saveAll(Try aTry, RewardsGroup rewardsGroup);
-	public void saveAll(List<Try> aTryList, RewardsGroup rewardsGroup); 
+	public Agent getAgent(List<Reward> rewards); 
 
-	public List<Try> getTries(RewardsGroup rewardsGroup); 
+	public Agent getLastAgent(); 
 	
-	public RewardsGroup getLastRewardsGroup(); 
+	// REDIS: Fertig
+	public double[] select(State state, Agent agent);
+	
+	// REDIS: Fertig
+	boolean update(State state, Agent agent, int action, double value);
+
+	// HBase: ... fast fertig.
+	public void saveAll(List<Try> aTryList, Agent agent); 
+
+	// HBase: ...
+	public List<Try> getTries(Agent agent); 
+	
 	
 	public void reset();
 
