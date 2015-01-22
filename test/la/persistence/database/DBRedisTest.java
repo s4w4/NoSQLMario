@@ -33,6 +33,7 @@ public class DBRedisTest {
 	@After 
 	public void tearDown() throws Exception {
 		dbRedis.disconnect(); 
+//		dbRedis.flushAll(); 
 	}
 	
 	@Test
@@ -49,6 +50,7 @@ public class DBRedisTest {
 	
 	@Test
 	public void testSelectData1() {
+		dbRedis.flushAll(); 
 		State state = new State(2,2,2);
 		List<Reward> rewards = new ArrayList<Reward>();
 		rewards.add(new Reward("Reward1", 100));		

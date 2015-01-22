@@ -20,6 +20,10 @@ public class DBRedis {
 		System.out.println("Connection to server sucessfully");
 //		jedis.flushAll();
 	}
+	
+	public void flushAll(){
+		jedis.flushAll(); 
+	}
 
 	private static byte[] toByteArray(double value){
 		byte[] bytes = new byte[8]; 
@@ -41,6 +45,7 @@ public class DBRedis {
 			for (int i = 0; i < result.length; i++) {
 				hashMap.put(("Action:"+(i+1)).getBytes(), toByteArray(0));
 				result[i] = 0; 
+				jedis.set("Action:"+(i+1)+"-"+agent, "0");
 			}
 			jedis.hmset(key, hashMap);
 		}else{
@@ -53,8 +58,10 @@ public class DBRedis {
 	public boolean update(State state, Agent agent, int action, double value) {
 		byte[] key = (state.getMarioState()+ "-" + state.getEnvironmentState() + "-"+ state.getEnemyState()+ ":" + agent).getBytes(); 
 		Map<byte[], byte[]> hashMap = jedis.hgetAll(key);
-		hashMap.put(("Action:" + action).getBytes(), toByteArray(value));
+		String actionStr = "Action:" + action; 
+		hashMap.put(actionStr.getBytes(), toByteArray(value));
 		jedis.hmset(key, hashMap); 
+		jedis.incr(actionStr+"-"+agent);
 		return true; 
 	}
 	
