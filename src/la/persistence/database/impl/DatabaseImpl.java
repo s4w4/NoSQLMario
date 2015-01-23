@@ -5,14 +5,19 @@ import la.common.Reward;
 import la.common.Agent;
 import la.common.State;
 import la.common.Try;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseImpl implements Database {
 
 	private DBRedis dbRedis;
+	private StatisticDatabase hbase;
 
 	public DatabaseImpl() {
 		this.dbRedis = new DBRedis();
+		this.hbase = new StatisticDatabase(); 
 	}
 
 	@Override
@@ -48,13 +53,13 @@ public class DatabaseImpl implements Database {
 
 
 	@Override
-	public void saveAll(List<Try> aTryList, Agent rewardsGroup) {
+	public void saveAll(List<Try> aTryList, Agent agent) {
+		hbase.saveAll(aTryList, agent);
 	}
 
 	@Override
-	public List<Try> getTries(Agent rewardsGroup) {
-//		return dbCommunication.selectTries(rewardsGroup);
-		return null; 
+	public List<Try> getTries(Agent agent) {
+		return hbase.getTries(agent); 
 	}
 
 	@Override
@@ -67,6 +72,7 @@ public class DatabaseImpl implements Database {
 //			e.printStackTrace();
 //		}
 //		return result;
+//		return new Agent(0, new ArrayList<Reward>()); 
 		return null; 
 	}
 
@@ -74,6 +80,11 @@ public class DatabaseImpl implements Database {
 	public void reset() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Map<String, Integer> getPreferredAction(Agent agent) {
+		return dbRedis.getPreferredAction(agent);
 	}
 
 

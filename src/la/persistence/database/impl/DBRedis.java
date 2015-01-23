@@ -7,102 +7,99 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.corba.se.spi.orbutil.fsm.Action;
+
 import la.common.Agent;
 import la.common.State;
 import redis.clients.jedis.Jedis;
 
 public class DBRedis {
 	private Jedis jedis;
-	private final int ANZAHL_AKTIONEN = 12; 
+	private final int ANZAHL_AKTIONEN = 12;
+
 	public DBRedis() {
-		//Connection to Redis server on localhost
+		// Connection to Redis server on localhost
 		this.jedis = new Jedis("localhost");
 		System.out.println("Connection to server sucessfully");
-//		jedis.flushAll();
-	}
-	
-	public void flushAll(){
-		jedis.flushAll(); 
 	}
 
-	private static byte[] toByteArray(double value){
-		byte[] bytes = new byte[8]; 
-		ByteBuffer.wrap(bytes).putDouble(value); 
-		return bytes; 
+	public void flushAll() {
+		jedis.flushAll();
 	}
-	
-	public static double toDoubleArray(byte[] byteArray){
-		int times = Double.SIZE / Byte.SIZE; 
-		return ByteBuffer.wrap(byteArray, 0, times).getDouble(); 
+
+	private static byte[] toByteArray(double value) {
+		byte[] bytes = new byte[8];
+		ByteBuffer.wrap(bytes).putDouble(value);
+		return bytes;
+	}
+
+	public static double toDoubleArray(byte[] byteArray) {
+		int times = Double.SIZE / Byte.SIZE;
+		return ByteBuffer.wrap(byteArray, 0, times).getDouble();
 	}
 
 	public double[] select(State state, Agent agent) {
-		double [] result = new double[ANZAHL_AKTIONEN];
-		
-		byte[] key = (state.getMarioState()+ "-" + state.getEnvironmentState() + "-"+ state.getEnemyState()+ ":" + agent).getBytes(); 
-		Map<byte[], byte[]> hashMap = jedis.hgetAll(key);
-		if (hashMap.size() == 0){
-			for (int i = 0; i < result.length; i++) {
-				hashMap.put(("Action:"+(i+1)).getBytes(), toByteArray(0));
-				result[i] = 0; 
-				jedis.set("Action:"+(i+1)+"-"+agent, "0");
-			}
-			jedis.hmset(key, hashMap);
-		}else{
-			for(int i = 0 ; i<result.length; i++)
-				result[i] = toDoubleArray(hashMap.get(("Action:"+(i+1)).getBytes())); 
-		}
-		return result; 
-	}
-	
-	public boolean update(State state, Agent agent, int action, double value) {
-		byte[] key = (state.getMarioState()+ "-" + state.getEnvironmentState() + "-"+ state.getEnemyState()+ ":" + agent).getBytes(); 
-		Map<byte[], byte[]> hashMap = jedis.hgetAll(key);
-		String actionStr = "Action:" + action; 
-		hashMap.put(actionStr.getBytes(), toByteArray(value));
-		jedis.hmset(key, hashMap); 
-		jedis.incr(actionStr+"-"+agent);
-		return true; 
-	}
-	
-//	public void getDataByPLZ(String plz) {
-//		jedis.connect();
-//		Map<String, String> map = jedis.hgetAll(plz);
-//		if (map.size() != 0) {
-//			String city = map.get("city");
-//			int pop = Integer.parseInt(map.get("pop"));
-//			float[] loc = new float[2];
-//			loc[0] = Float.parseFloat(map.get("loc_x"));
-//			loc[1] = Float.parseFloat(map.get("loc_y"));
-//			String state = map.get("state");
-//			jedis.disconnect();
-//			System.out.println("plz " + plz + " state " + state);
-//		}
-//		// return new Data(plz, city, loc, pop, state);
-//	}
-	//
-	// public Set<String> getPLZByCity(String city) {
-	// jedis.connect();
-	// Set<String> res = new HashSet<String>();
-	// if (jedis.isConnected()) {
-	// Set<String> set = jedis.keys("*");
-	// for (String key : set) {
-	// Map<String, String> map = jedis.hgetAll(key);
-	// String cityFromDB = map.get("city");
-	// if (city.equals(cityFromDB))
-	// res.add(key);
-	// }
-	// }
-	// jedis.disconnect();
-	// return res;
-	// }
+		double[] result = new double[ANZAHL_AKTIONEN];
 
+		byte[] key = (state.getMarioState() + "-" + state.getEnvironmentState()
+				+ "-" + state.getEnemyState() + ":" + agent).getBytes();
+		Map<byte[], byte[]> hashMap = jedis.hgetAll(key);
+		if (hashMap.size() == 0) {
+			for (int i = 0; i < result.length; i++) {
+				hashMap.put(("action:" + (i + 1)).getBytes(), toByteArray(0));
+				result[i] = 0;
+			}
+			//Best Action 
+			hashMap.put("best-action".getBytes(), "-".getBytes());
+			hashMap.put("best-action-value".getBytes(), toByteArray(0));
+			//-----------
+			jedis.hmset(key, hashMap);
+		} else {
+			for (int i = 0; i < result.length; i++)
+				result[i] = toDoubleArray(hashMap.get(("action:" + (i + 1))
+						.getBytes()));
+		}
+		return result;
+	}
+
+	public boolean update(State state, Agent agent, int action, double value) {
+		byte[] key = (state.getMarioState() + "-" + state.getEnvironmentState()
+				+ "-" + state.getEnemyState() + ":" + agent).getBytes();
+		Map<byte[], byte[]> hashMap = jedis.hgetAll(key);
+		String actionStr = "action:" + action;
+		hashMap.put(actionStr.getBytes(), toByteArray(value));
+		//BestAction
+//		System.out.println("value = " + value + " tod " + toDoubleArray(hashMap.get("best-action-value".getBytes())));
+		if (hashMap.get("best-action-value".getBytes()) != null && toDoubleArray(hashMap.get("best-action-value".getBytes())) <= value) {
+			hashMap.put("best-action".getBytes(), actionStr.getBytes());
+			hashMap.put("best-action-value".getBytes(), toByteArray(value));
+			System.out.println("YES");
+		}
+		hashMap.put(key, toByteArray(value));
+		//-----------
+		jedis.hmset(key, hashMap);
+		return true;
+	}
+
+	public Map<String, Integer> getPreferredAction(Agent agent) {
+		Map<String, Integer> result = new HashMap<String, Integer>(); 
+		Set<String> set = jedis.keys("*");
+		for (String key : set) {
+			Map<String, String> map = jedis.hgetAll(key);
+			System.out.println(map.get("best-action"));
+			if (!result.containsKey(map.get("best-action"))){
+				result.put(map.get("best-action")+"", 1);
+			}else{
+				result.put(map.get("best-action")+"", result.get(map.get("best-action")));
+			}
+		}
+		return result;
+	}
 
 
 	public void connect() {
 		this.jedis.connect();
 	}
-
 
 	public void disconnect() {
 		this.jedis.disconnect();

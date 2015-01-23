@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import la.common.Agent;
 import la.common.Reward;
@@ -36,17 +37,6 @@ public class DBRedisTest {
 //		dbRedis.flushAll(); 
 	}
 	
-	@Test
-	public void testUpdateData() {
-		State state = new State(3,3,3);
-		List<Reward> rewards = new ArrayList<Reward>();
-		rewards.add(new Reward("Reward1", 100));		
-		rewards.add(new Reward("Reward2", 200));		
-		Agent agent = new Agent(1, rewards);
-		int action = 12;
-		double value = -13;
-		dbRedis.update(state, agent, action, value);
-	}
 	
 	@Test
 	public void testSelectData1() {
@@ -71,6 +61,18 @@ public class DBRedisTest {
 		assertTrue(result[11] == 0);	
 	}
 	
+	@Test
+	public void testUpdateData() {
+		State state = new State(2,2,2);
+		List<Reward> rewards = new ArrayList<Reward>();
+		rewards.add(new Reward("Reward1", 100));		
+		rewards.add(new Reward("Reward2", 200));		
+		Agent agent = new Agent(1, rewards);
+		int action = 12;
+		double value = 13;
+		dbRedis.update(state, agent, action, value);
+	}
+	
 
 	@Test
 	public void testSelectData2() {
@@ -82,7 +84,7 @@ public class DBRedisTest {
 		
 		//UPDATE
 		int action = 10;
-		double value = -13;
+		double value = 25;
 		dbRedis.update(state, agent, action, value);
 		
 		double[] result = dbRedis.select(state, agent);
@@ -95,13 +97,80 @@ public class DBRedisTest {
 		assertTrue(result[6] == 0);
 		assertTrue(result[7] == 0);
 		assertTrue(result[8] == 0);
-		assertTrue(result[9] == -13);
+		assertTrue(result[9] == 25);
+		assertTrue(result[10] == 0);
+//		assertTrue(result[11] == 13);	
+	}
+	
+	
+	@Test
+	public void testSelectData3() {
+		dbRedis.flushAll(); 
+		State state = new State(2,3,2);
+		List<Reward> rewards = new ArrayList<Reward>();
+		rewards.add(new Reward("Reward1", 100));		
+		rewards.add(new Reward("Reward2", 200));		
+		Agent agent = new Agent(1, rewards);
+		double[] result = dbRedis.select(state, agent);
+		assertTrue(result[0] == 0);
+		assertTrue(result[1] == 0);
+		assertTrue(result[2] == 0);
+		assertTrue(result[3] == 0);
+		assertTrue(result[4] == 0);
+		assertTrue(result[5] == 0);
+		assertTrue(result[6] == 0);
+		assertTrue(result[7] == 0);
+		assertTrue(result[8] == 0);
+		assertTrue(result[9] == 0);
 		assertTrue(result[10] == 0);
 		assertTrue(result[11] == 0);	
 	}
+	
 	@Test
-	public void testGet() {
-		
+	public void testUpdateData3() {
+		State state = new State(2,3,2);
+		List<Reward> rewards = new ArrayList<Reward>();
+		rewards.add(new Reward("Reward1", 100));		
+		rewards.add(new Reward("Reward2", 200));		
+		Agent agent = new Agent(1, rewards);
+		int action = 12;
+		double value = 250;
+		dbRedis.update(state, agent, action, value);
+	}
+	
+	public void testSelectData4() {
+		dbRedis.flushAll(); 
+		State state = new State(2,3,2);
+		List<Reward> rewards = new ArrayList<Reward>();
+		rewards.add(new Reward("Reward1", 100));		
+		rewards.add(new Reward("Reward2", 200));		
+		Agent agent = new Agent(1, rewards);
+		double[] result = dbRedis.select(state, agent);
+		assertTrue(result[0] == 0);
+		assertTrue(result[1] == 0);
+		assertTrue(result[2] == 0);
+		assertTrue(result[3] == 0);
+		assertTrue(result[4] == 0);
+		assertTrue(result[5] == 0);
+		assertTrue(result[6] == 0);
+		assertTrue(result[7] == 0);
+		assertTrue(result[8] == 0);
+		assertTrue(result[9] == 0);
+		assertTrue(result[10] == 0);
+		assertTrue(result[11] == 250);	
+	}
+	
+	@Test
+	public void testGetPreferredAction() {
+		State state = new State(2,2,2);
+		List<Reward> rewards = new ArrayList<Reward>();
+		rewards.add(new Reward("Reward1", 100));		
+		rewards.add(new Reward("Reward2", 200));	
+		Agent agent = new Agent(1, rewards);
+		Map<String, Integer> res = dbRedis.getPreferredAction(agent);
+		for (String key : res.keySet()) {
+			System.out.println(" Action = " + key + " count = " + res.get(key));
+		}
 	}
 	
 

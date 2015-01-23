@@ -14,7 +14,7 @@ import la.common.State;
 import la.common.Try;
 import la.persistence.database.Database;
 
-public class StatisticDatabase implements Database {
+public class StatisticDatabase {
 	private final String TABLENAME_TRY = "try";
 	private final String COLUMNFAMILY_TRY = "cf";
 	private final String COLUMN_WIN = "Win";
@@ -40,31 +40,6 @@ public class StatisticDatabase implements Database {
 		}
 	}
 
-	@Override
-	public Agent getAgent(List<Reward> rewards) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Agent getLastAgent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double[] select(State state, Agent agent) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean update(State state, Agent agent, int action, double value) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public void saveAll(List<Try> aTryList, Agent agent) {
 		try {
 			for (Try t : aTryList) {
@@ -75,7 +50,6 @@ public class StatisticDatabase implements Database {
 		}
 	}
 
-	@Override
 	public List<Try> getTries(Agent agent) {
 		List<Try> tries = new ArrayList<Try>();
 		try {
@@ -126,11 +100,7 @@ public class StatisticDatabase implements Database {
 		return tries;
 	}
 
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 	private void saveTries(Try t, Agent agent) throws IOException{
 		Map<String, String> values = new HashMap<String, String>();

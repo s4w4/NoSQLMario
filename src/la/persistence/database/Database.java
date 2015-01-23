@@ -1,6 +1,9 @@
 package la.persistence.database;
 
 import java.util.List;
+import java.util.Map;
+
+import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 import la.common.Reward;
 import la.common.Agent;
@@ -27,6 +30,8 @@ public interface Database {
 	
 	
 	public void reset();
+	
+	public Map<String, Integer> getPreferredAction(Agent agent); 
 
 
 }
