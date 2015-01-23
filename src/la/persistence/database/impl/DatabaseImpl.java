@@ -1,18 +1,10 @@
 package la.persistence.database.impl;
 
-import context.ManagerFactory;
 import la.persistence.database.Database;
-import la.persistence.entities.RewardsForAction;
 import la.common.Reward;
 import la.common.Agent;
 import la.common.State;
 import la.common.Try;
-import la.persistence.importhandler.ImportHandler;
-import la.persistence.importhandler.impl.DBConfig;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class DatabaseImpl implements Database {
